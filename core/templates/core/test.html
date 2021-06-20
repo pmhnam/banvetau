@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="form">
+        <form action="xyly/" method="post">
+            {% csrf_token %}
+            <input name="t1" type="text">
+            <input id="btn1" type="submit" value="submit">
+        </form>
+
+    </div>
+
+
+
+    <script>
+        var btnsbm = document.querySelector("#btn1")
+        var form = document.querySelector(".form")
+        btnsbm.addEventListener('click',(e)=>{
+            e.preventDefault()
+            let txt = `<form action="xyly/" method="post">
+                        {% csrf_token %}
+
+                        <input name="t2" type="text">
+                        <input id="btn2" type="submit" value="submit">
+                    </form>`
+            form.innerHTML = txt
+
+        })
+    </script>
+</body>
+</html>

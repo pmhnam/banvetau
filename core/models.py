@@ -1,7 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.fields.related import ForeignKey
+from datetime import date,datetime,time
+
 # Create your models here.
+
+
+TIME_SCHEDULE_CHOICE = (
+    (datetime.strptime('06:00:00','%H:%M:%S').time(),"6h00"),
+    (datetime.strptime('09:00:00','%H:%M:%S').time(),"9h00"),
+    (datetime.strptime('18:00:00','%H:%M:%S').time(),"18h00"),
+)
 
 STATUS_TICKET_CHOICE = (
     ("T","Đã bán"),
@@ -46,32 +55,31 @@ SEAT_TICKET_CHOICE = (
     ( 28, "Seat 28"),
     ( 29, "Seat 29"),
     ( 30, "Seat 30"),
-    ( 31, "Seat 31"),
-    ( 32, "Seat 32"),
-    ( 33, "Seat 33"),
-    ( 34, "Seat 34"),
-    ( 35, "Seat 35"),
-    ( 36, "Seat 36"),
-    ( 37, "Seat 37"),
-    ( 38, "Seat 38"),
-    ( 39, "Seat 39"),
-    ( 40, "Seat 40"),
-    ( 41, "Seat 41"),
-    ( 42, "Seat 42"),
-    ( 43, "Seat 43"),
-    ( 44, "Seat 44"),
-    ( 45, "Seat 45"),
-    ( 46, "Seat 46"),
-    ( 47, "Seat 47"),
-    ( 48, "Seat 48"),
-    ( 49, "Seat 49"),
-    ( 50, "Seat 50"),
+    # ( 31, "Seat 31"),
+    # ( 32, "Seat 32"),
+    # ( 33, "Seat 33"),
+    # ( 34, "Seat 34"),
+    # ( 35, "Seat 35"),
+    # ( 36, "Seat 36"),
+    # ( 37, "Seat 37"),
+    # ( 38, "Seat 38"),
+    # ( 39, "Seat 39"),
+    # ( 40, "Seat 40"),
+    # ( 41, "Seat 41"),
+    # ( 42, "Seat 42"),
+    # ( 43, "Seat 43"),
+    # ( 44, "Seat 44"),
+    # ( 45, "Seat 45"),
+    # ( 46, "Seat 46"),
+    # ( 47, "Seat 47"),
+    # ( 48, "Seat 48"),
+    # ( 49, "Seat 49"),
+    # ( 50, "Seat 50"),
 )
 
 TYPE_TICKET_CHOICE = (
     ('N', 'Normal'),
     ('V', 'VIP'),
-
 )
 
 STATUS_BILL_CHOICE = (
@@ -108,28 +116,30 @@ class Train(models.Model):
 
 class Schedule(models.Model):
     train = models.ForeignKey(Train, related_name='trains', on_delete=models.CASCADE)
-    start_day = models.DateTimeField(auto_now=False, auto_now_add=False)
+    start_day = models.DateField(auto_now=False, auto_now_add=False)
+    start_time = models.TimeField(choices=TIME_SCHEDULE_CHOICE)
     route = models.ForeignKey(Route, related_name='routes', on_delete=models.CASCADE)
     status = models.CharField(default = "", max_length=50, null=True,blank=True)
 
     def __str__(self) -> str:
-        return str(self.start_day) + ", " + self.train.name + " from " + str(self.route)
+        return str(self.start_day) + " " + str(self.start_time) +", " + self.train.name + " from " + str(self.route)
 
 
 class Ticket(models.Model):
     seat = models.IntegerField(choices = SEAT_TICKET_CHOICE)
     cost = models.IntegerField(choices = COST_CHOICE, default = 100000)
     type = models.CharField(choices = TYPE_TICKET_CHOICE, max_length=1, default='N')
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="trains_ticket")
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, related_name="schedules")
     status = models.CharField(choices = STATUS_TICKET_CHOICE, default = 'F', max_length = 1)
  
     def __str__(self) -> str:
-        return "ghế " + str(self.seat) + " " + self.train.name
+        return "ghế " + str(self.seat) + " " + self.schedule.train.name
 
 
 class Bill(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     date = models.DateField(auto_now_add = True)
+    total = models.IntegerField(default=100000)
     status = models.CharField(choices = STATUS_BILL_CHOICE, default="UNPAID", max_length=10)
  
     def __str__(self) -> str:

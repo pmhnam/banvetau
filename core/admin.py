@@ -5,11 +5,11 @@ from .models import User,Bill,BillDetail,Ticket,Train,Schedule,Route,Station
 # class UserAdmin(admin.ModelAdmin):
 #     list_display = ['email', 'username']
 class BillAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date']
+    list_display = ['user','total', 'date','status']
 class BillDetailAdmin(admin.ModelAdmin):
     list_display = ['bill', 'ticket', 'status']
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ['seat','status', 'cost', 'type', 'train']
+    list_display = ['seat','status', 'cost', 'type', 'schedule']
 class ScheduleAdmin(admin.ModelAdmin):
     list_display = ['train', 'start_day','route']
 class TrainAdmin(admin.ModelAdmin):

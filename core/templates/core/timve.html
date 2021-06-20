@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="control">
+        <input type="hidden" id="timezone" name="timezone" value="-07:00">
+        <select id = "route" class="route">
+            {% for route in routes %}
+                <option value="{{route.id}}">{{route}}</option>
+            {% endfor %}
+        </select>
+        <input type="date" id="date">
+        <select id = "time" class="time">
+            <option value="6h00">06h00</option>
+            <option value="9h00">09h00</option>
+            <option value="18h00">18h00</option>
+        </select>
+    </div>
+    <form method="POST">
+        <div class="tickets">
+        </div>
+        <input type="submit" value="Đặt vé">
+        {%csrf_token%}
+    </form>
+
+    <script>
+        const div_tickets = document.querySelector('.tickets')
+        const input_time = document.querySelector('#time')
+        const input_route = document.querySelector('#route')
+        const input_date = document.querySelector('#date')
+        const list_ticket = []
+        var find_tickets = []
+        let ngayhomnay = new Date()
+        input_date.value = ngayhomnay.toISOString().split('T')[0]
+
+
+        load_ticket()
+
+        input_time.addEventListener('input',(e)=>{
+            find_tickets = []
+            thoigian = e.target.value
+            tuyen = input_route.value
+            ngaydi = input_date.value
+            for( i of list_ticket ){
+                if(thoigian == i.start_time ){
+                    if(tuyen == i.route) {
+                        if(ngaydi == i.start_day){
+                            find_tickets.push(i)
+                        }
+                    }
+                }
+            }
+            display_tickets(find_tickets);
+        })
+
+        input_date.addEventListener('input',(e)=>{
+            find_tickets = []
+            thoigian = input_time.value
+            tuyen = input_route.value
+            ngaydi = e.target.value
+            for( i of list_ticket ){
+                if(thoigian == i.start_time ){
+                    if(tuyen == i.route) {
+                        if(ngaydi == i.start_day){
+                            find_tickets.push(i)
+                        }
+                    }
+                }
+            }
+            display_tickets(find_tickets);
+        })
+
+        input_route.addEventListener('input',(e)=>{
+            find_tickets = []
+            thoigian = input_time.value
+            tuyen = e.target.value
+            ngaydi = input_date.value
+            for( i of list_ticket ){
+                if(thoigian == i.start_time ){
+                    if(tuyen == i.route) {
+                        if(ngaydi == i.start_day){
+                            find_tickets.push(i)
+                        }
+                    }
+                }
+            }
+            display_tickets(find_tickets);
+        })
+
+        var s = []
+        var d = ''
+        var m = ''
+        var y = ''
+        var start_day = ''
+        function load_ticket(){
+            {% for ticket in fullticket %}
+                s = `{{ticket.schedule.start_day}}`.split(' ')
+                m = chuyendoithang(s[0])
+                d = s[1].replace(',','')
+                y = s[2]
+                start_day = y+'-'+m+'-'+d
+                list_ticket.push({
+                    'id':`{{ticket.id}}`,
+                    'seat':`{{ticket.get_seat_display}}`,
+                    'cost':{{ticket.cost}},
+                    'start_day':start_day,
+                    'start_time':`{{ticket.schedule.get_start_time_display}}`,
+                    'type':`{{ticket.get_type_display}}`,
+                    'route':`{{ticket.schedule.route.id}}`,
+                    'status':`{{ticket.status}}`,
+                })
+            {% endfor %}
+            console.log(list_ticket)
+        }
+
+        function chuyendoithang(key){
+            let result = ''
+            switch (key) {
+                case "Jan.":
+                    result = '01'
+                    break;
+                case "Feb.":
+                    result = '02'
+                    break;
+                case "March":
+                    result = '03'
+                    break;
+                case "April":
+                    result = '04'
+                    break;
+                case "May":
+                    result = '05'
+                    break;
+                case "June":
+                    result = '06'
+                    break;
+                case "July":
+                    result = '07'
+                    break;
+                case "Aug.":
+                    result = '08'
+                    break;
+                case "Sept.":
+                    result = '09'
+                    break;
+                case "Oct.":
+                    result = '10'
+                    break;
+                case "Nov.":
+                    result = '11'
+                    break;
+                case "Dec.":
+                    result = '12'
+                    break;
+            }
+            return result
+        }
+
+        function display_tickets(find_tickets){
+            div_tickets.innerHTML = ''
+            for( i of find_tickets){
+                let div = document.createElement('div')
+                let input_choice = document.createElement('input')
+                let label_choice = document.createElement('label')
+                let span_seat = document.createElement('span')
+                let span_cost = document.createElement('span')
+                let span_type = document.createElement('span')
+
+                div.appendChild(input_choice)
+                div.appendChild(label_choice)
+                label_choice.appendChild(span_seat)
+                label_choice.appendChild(span_cost)
+                label_choice.appendChild(span_type)
+
+                input_choice.setAttribute('type',"checkbox")
+                input_choice.setAttribute('name',i.id)
+                input_choice.setAttribute('value',i.id)
+                if(i.status == 'T'){
+                    input_choice.setAttribute('onclick',"return false;")
+                }
+
+                span_seat.textContent = i.seat 
+                span_cost.textContent = ', giá: ' + i.cost
+                span_type.textContent = ', loại: ' + i.type
+
+                
+
+                div_tickets.appendChild(div)
+            }
+        }
+    </script>
+</body>
+
+</html>
