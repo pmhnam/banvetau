@@ -1,32 +1,47 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Đặt vé</title>
+    <link rel="stylesheet" href="{% static 'css/timve.css' %}">
 </head>
 <body>
-    <div class="control">
-        <input type="hidden" id="timezone" name="timezone" value="-07:00">
-        <select id = "route" class="route">
-            {% for route in routes %}
-                <option value="{{route.id}}">{{route}}</option>
-            {% endfor %}
-        </select>
-        <input type="date" id="date">
-        <select id = "time" class="time">
-            <option value="6h00">06h00</option>
-            <option value="9h00">09h00</option>
-            <option value="18h00">18h00</option>
-        </select>
-    </div>
-    <form method="POST">
-        <div class="tickets">
+    <section>
+        <div class="container">
+            <div class="control">
+                <input type="hidden" id="timezone" name="timezone" value="-07:00">
+                <select id = "route" class="route">
+                    {% for route in routes %}
+                        <option value="{{route.id}}">{{route}}</option>
+                    {% endfor %}
+                </select>
+                <input type="date" id="date">
+                <select id = "time" class="time">
+                    <option value="6h00">06h00</option>
+                    <option value="9h00">09h00</option>
+                    <option value="18h00">18h00</option>
+                </select>
+            </div>
+        <div class="post">
+            <form method="POST">
+                <div class="tickets">
+                </div>
+                {%csrf_token%}
+                <input class="submit" type="submit" value="Đặt vé">
+            </form>
+            <div class="note">
+                <span>Chưa đặt</span>
+                <span>Đang chọn</span>
+                <span>Đã đặt</span>
+            </div>
+
         </div>
-        <input type="submit" value="Đặt vé">
-        {%csrf_token%}
-    </form>
+    </div>
+</section>
 
     <script>
         const div_tickets = document.querySelector('.tickets')
@@ -36,10 +51,57 @@
         const list_ticket = []
         var find_tickets = []
         let ngayhomnay = new Date()
-        input_date.value = ngayhomnay.toISOString().split('T')[0]
+        {% comment %} input_date.value = ngayhomnay.toISOString().split('T')[0] {% endcomment %}
+        input_date.value = '2021-06-22'
+
+
+        var s = []
+        var d = ''
+        var m = ''
+        var y = ''
+        var start_day = ''
+        function load_ticket(){
+            {% for ticket in fullticket %}
+                s = `{{ticket.schedule.start_day}}`.split(' ')
+                m = chuyendoithang(s[0])
+                d = s[1].replace(',','')
+                y = s[2]
+                start_day = y+'-'+m+'-'+d
+                list_ticket.push({
+                    'id':`{{ticket.id}}`,
+                    'seat':`{{ticket.get_seat_display}}`,
+                    'cost':{{ticket.cost}},
+                    'start_day':start_day,
+                    'start_time':`{{ticket.schedule.get_start_time_display}}`,
+                    'type':`{{ticket.get_type_display}}`,
+                    'route':`{{ticket.schedule.route.id}}`,
+                    'status':`{{ticket.status}}`,
+                })
+            {% endfor %}
+            console.log(list_ticket)
+        }
 
 
         load_ticket()
+        defaultLoad()
+
+        function defaultLoad() {
+            find_tickets = []
+            thoigian = input_time.value
+            tuyen = input_route.value
+            ngaydi = input_date.value
+            for (i of list_ticket) {
+                if (thoigian == i.start_time) {
+                    if (tuyen == i.route) {
+                        if (ngaydi == i.start_day) {
+                            find_tickets.push(i)
+                        }
+                    }
+                }
+            }
+            display_tickets(find_tickets);
+            console.log('load default')
+        }
 
         input_time.addEventListener('input',(e)=>{
             find_tickets = []
@@ -92,31 +154,7 @@
             display_tickets(find_tickets);
         })
 
-        var s = []
-        var d = ''
-        var m = ''
-        var y = ''
-        var start_day = ''
-        function load_ticket(){
-            {% for ticket in fullticket %}
-                s = `{{ticket.schedule.start_day}}`.split(' ')
-                m = chuyendoithang(s[0])
-                d = s[1].replace(',','')
-                y = s[2]
-                start_day = y+'-'+m+'-'+d
-                list_ticket.push({
-                    'id':`{{ticket.id}}`,
-                    'seat':`{{ticket.get_seat_display}}`,
-                    'cost':{{ticket.cost}},
-                    'start_day':start_day,
-                    'start_time':`{{ticket.schedule.get_start_time_display}}`,
-                    'type':`{{ticket.get_type_display}}`,
-                    'route':`{{ticket.schedule.route.id}}`,
-                    'status':`{{ticket.status}}`,
-                })
-            {% endfor %}
-            console.log(list_ticket)
-        }
+        
 
         function chuyendoithang(key){
             let result = ''
@@ -161,37 +199,76 @@
             return result
         }
 
-        function display_tickets(find_tickets){
+        function display_tickets(find_tickets) {
             div_tickets.innerHTML = ''
-            for( i of find_tickets){
+            for (i of find_tickets) {
                 let div = document.createElement('div')
                 let input_choice = document.createElement('input')
                 let label_choice = document.createElement('label')
                 let span_seat = document.createElement('span')
-                let span_cost = document.createElement('span')
-                let span_type = document.createElement('span')
+                // let span_cost = document.createElement('span')
+                // let span_type = document.createElement('span')
+
+                //add className
+                span_seat.classList.add("seat_slot");
+                input_choice.classList.add("choose_seat");
+                div.classList.add("seat_contain");
 
                 div.appendChild(input_choice)
                 div.appendChild(label_choice)
                 label_choice.appendChild(span_seat)
-                label_choice.appendChild(span_cost)
-                label_choice.appendChild(span_type)
+                // label_choice.appendChild(span_cost)
+                // label_choice.appendChild(span_type)
 
-                input_choice.setAttribute('type',"checkbox")
-                input_choice.setAttribute('name',i.id)
-                input_choice.setAttribute('value',i.id)
-                if(i.status == 'T'){
-                    input_choice.setAttribute('onclick',"return false;")
+                input_choice.setAttribute('type', "checkbox")
+                input_choice.setAttribute('name', i.id)
+                input_choice.setAttribute('value', i.id)
+                if (i.status == 'T') {
+                    div.classList.add('active')
+                    input_choice.setAttribute('onclick', "return false;")
                 }
 
-                span_seat.textContent = i.seat 
-                span_cost.textContent = ', giá: ' + i.cost
-                span_type.textContent = ', loại: ' + i.type
-
-                
+                span_seat.textContent = i.seat
+                // span_cost.textContent = ', giá: ' + i.cost
+                // span_type.textContent = ', loại: ' + i.type
 
                 div_tickets.appendChild(div)
             }
+            choosing_seat();
+        }
+        function choosing_seat() {
+            const clickSlots = document.querySelectorAll(".seat_slot");
+            const btnChooseSeats = document.querySelectorAll(".choose_seat");
+            const slotContains = document.querySelectorAll(".seat_contain");
+            slotContains.forEach(slotContain => {
+                slotContain.addEventListener("click", (e) => {
+                    console.log('btnChoosing',btnChoosing);
+                    btnChoosing.classList.toggle("choosing");
+                    if(e.target.children[0].checked == false){
+                        e.target.children[0].checked = true
+                    }else{
+                        e.target.children[0].checked = false
+                    }
+                })
+            })
+            btnChooseSeats.forEach(btnChooseSeat =>{
+                btnChooseSeat.addEventListener('click',(e)=>{
+                    let div = e.target.parentElement
+                    div.classList.toggle("choosing");
+                })
+            })
+            clickSlots.forEach(clickSlot =>{
+                clickSlot.addEventListener('click',(e)=>{
+                    let div = e.target.parentElement.parentElement
+                    div.classList.toggle("choosing");
+                    let nutcheck = e.target.parentElement.previousElementSibling
+                    if(nutcheck.checked == false){
+                        nutcheck.checked = true
+                    }else{
+                        nutcheck.checked = false
+                    }
+                })
+            })
         }
     </script>
 </body>

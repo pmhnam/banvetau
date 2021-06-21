@@ -4,30 +4,83 @@ from datetime import date,datetime as datetime2
 from django.views import View
 from django.db.models import Q
 import datetime
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .forms import RegistrationForm
 # Create your views here.
-
+@login_required
 def index(request):
-    list_ticket = []
+    list_bill_detail = []
     today = date.today()
-    print(today)
     now = datetime2.now() + datetime.timedelta(hours = 2)
     current_time_txt = now.strftime("%H:%M:%S")
     current_time = datetime2.strptime(current_time_txt,"%H:%M:%S").time()
-    
 
     bills = Bill.objects.filter(user = request.user)
     for bill in bills:
         bdts = BillDetail.objects.filter(bill = bill)
         for bdt in bdts:
-            if bdt.ticket.schedule.start_day >= today and bdt.ticket.schedule.start_time > current_time :
-                list_ticket.append(bdt.ticket)
+            if bdt.ticket.schedule.start_day == today:
+                if bdt.ticket.schedule.start_time > current_time:
+                    list_bill_detail.append(bdt)
+            elif bdt.ticket.schedule.start_day > today:
+                list_bill_detail.append(bdt)
     context = {
-        'list_ticket':list_ticket,
+        'list_bill_detail':list_bill_detail,
+        
     }
     return render(request, "core/index.html",context)
 
+def register(request):
+    form =RegistrationForm()
+    if request.method =='POST':
+        form=RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    return render(request,'core/register.html',{'form':form})
 
+
+
+@login_required
+def ticketDetail(request,pk):
+    bill_detail = BillDetail.objects.get(id = pk)
+    context = {
+        'bill_detail':bill_detail,
+    }
+    return render(request, 'core/ticket_detail.html',context)
+
+# bill_detail.id
+@login_required
+def huyVe(request,pk):
+    bill_detail = BillDetail.objects.get(pk = pk)
+    bill = Bill.objects.get(id = bill_detail.bill.id)
+    ticket = Ticket.objects.get(id = bill_detail.ticket.id)
+    ticket.status = 'F'
+    bill.total -= ticket.cost
+    ticket.save()
+    bill.save()
+    bill_detail.delete()
+    return redirect('/')
+
+@login_required
+def thanhToan(request):
+    bill = Bill.objects.get(user = request.user, status = 'UNPAID')
+    bill_details = bill.bills.all()
+    context= {
+        'bill_details':bill_details,
+        'bill':bill,
+    }
+    return render(request, 'core/thanhtoan.html',context)
+
+@login_required
+def xuLyThanhToan(request,pk):
+    bill = Bill.objects.get(pk = pk)
+    bill.status = 'PAID'
+    bill.save()
+    return redirect('/')
+
+@method_decorator(login_required(), name='dispatch')
 class Schedules(View):
     def get(self,request):
         trains = Train.objects.all()
@@ -54,23 +107,12 @@ class Schedules(View):
             Ticket.objects.get_or_create(seat = i, schedule = obj )
         
         return redirect("schedules")
-
     
-
-def chontuyen(request):
-
-    return render(request, 'core/test.html')
-def xyly(request):
-    a = Route.objects.all()
-    a.txt
-    return render(request, 'core/test.html')
-    
-
-
+@method_decorator(login_required(), name='dispatch')
 class Tickets(View):
     def get(self,request):
         today = date.today()
-        now = datetime.now()
+        now = datetime2.now()
         current_time = now.strftime("%H:%M:%S")
         schedules = Schedule.objects.filter(Q(start_day__gt = today) | Q(start_day = today , start_time__gt = current_time))
         fullticket = []
@@ -93,10 +135,12 @@ class Tickets(View):
         form = request.POST
         tickets = Ticket.objects.filter(status = 'F')
         today = date.today()
+        
+        for i in tickets:                
 
-        for i in tickets:
             id = form.get(str(i.id), None)
             if id != None:
+                print("id vé đặt là ",id)
                 bill, created = Bill.objects.get_or_create(user = current_user,
                     status = 'UNPAID',
                     defaults={
@@ -106,11 +150,11 @@ class Tickets(View):
                 BillDetail.objects.get_or_create(bill = bill, ticket = i)
                 i.status = 'T'
                 i.save()
-        total = 0
-        for i in bill.bills.all():
-            total += i.ticket.cost
-        bill.total = total
-        bill.save()
+                total = 0
+                for i in bill.bills.all():
+                    total += i.ticket.cost
+                bill.total = total
+                bill.save()
         return redirect('/')
 
 

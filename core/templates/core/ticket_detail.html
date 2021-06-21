@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>{{bill_detail.ticket.get_seat_display}}</p>
+    <p>{{bill_detail.ticket.cost}}</p>
+    <p>{{bill_detail.ticket.schedule.start_day}}</p>
+    <p>{{bill_detail.ticket.schedule.get_start_time_display}}</p>
+    <a href="{% url 'huyve' bill_detail.id %}">Huỷ vé</a>
+</body>
+</html>
