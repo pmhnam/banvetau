@@ -1,34 +1,31 @@
-{% extends 'core/base_manage.html' %}
+{% extends 'core/base_manage.html' %} {% load static %} {% block head %}
+<title>Thêm Ga</title>
+<link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
+{% endblock head %} {% block contain %}
+<div class="main">
+  <form action="" method="post">
+    {% csrf_token %}
+    <label for="name">Name: </label>
+    <input type="text" name="name" />
+    <label for="address">Address: </label>
+    <input type="text" name="address" />
 
-{% load static %}
-
-{% block head %}
-    <title>Thêm Ga</title>
-{% endblock head %}
-
-{% block contain %}
-    <form action="" method="post">
-        {% csrf_token %}
-        <label for="name">Name: </label>
-        <input type="text" name='name'>
-        <label for="address">Address: </label>
-        <input type="text" name='address'>
-
-        <input type="submit" value="Add">
-    </form>
-    <fieldset>
-        <legend id="myLegend">Stations:</legend>
-        <table border="1px solid gray">
-            <tr border="1px solid gray" >
-                <th style="padding:5px">Tên Ga</th>
-                <th style="padding:5px">Địa chỉ</th>
-            </tr>
-            {% for station in stations %}
-            <tr border="1px solid gray">
-                <td style="padding:5px">{{station.name}}</td> 
-                <td style="padding:5px">{{station.address}}</td> 
-            </tr>
-            {% endfor %}
-        </table>
-    </fieldset>
+    <input type="submit" value="Add" />
+  </form>
+  <fieldset>
+    <legend id="myLegend">Stations:</legend>
+    <table border="1px solid gray">
+      <tr border="1px solid gray">
+        <th style="padding: 5px">Tên Ga</th>
+        <th style="padding: 5px">Địa chỉ</th>
+      </tr>
+      {% for station in stations %}
+      <tr border="1px solid gray">
+        <td style="padding: 5px">{{station.name}}</td>
+        <td style="padding: 5px">{{station.address}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </fieldset>
+</div>
 {% endblock contain %}

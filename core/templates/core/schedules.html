@@ -1,51 +1,52 @@
-{% extends 'core/base_manage.html' %}
-
-{% load static %}
-
-{% block head %}
-    <title>Lập lịch</title>
-{% endblock head %}
-
-{% block contain %}
-    <form action="" method="post">
-        {% csrf_token %}
-        <select name='train'>
-        {% for train in trains %}
-            <option value = '{{train.id}}'>{{train}}</option>
-        {% endfor %}
-        </select>
-        <select name = 'route'>
-        {% for route in routes %}
-            <option value = '{{route.id}}'>{{route}}</option>
-        {% endfor %}
-        </select>
-        <input type="date" name="start_day" id="start_day" required>
-        <select name="start_time">
-            <option value="06:00:00">6h00</option>
-            <option value="09:00:00">9h00</option>
-            <option value="06:00:00">18h00</option>
-        </select>
-        <input type="submit" value="Add">
-    </form>
-    <fieldset>
-        <legend id="myLegend">Schedules:</legend>
-        <table border="1px solid gray">
-            <tr border="1px solid gray" >
-                <th style="padding:5px">Nơi đi</th>
-                <th style="padding:5px">Nơi đến</th>
-                <th style="padding:5px">Ngày Giờ</th>
-            </tr>
-            {% for schedule in schedules %}
-            <tr border="1px solid gray">
-                <td style="padding:5px">{{schedule.route.departure}}</td> 
-                <td style="padding:5px">{{schedule.route.destination}}</td> 
-                <td style="padding:5px">Ngày {{schedule.start_day}} lúc {{schedule.get_start_time_display}}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </fieldset>
-    <script>
-        let ngayhomnay = new Date()
-        document.querySelector('#start_day').value = ngayhomnay.toISOString().split('T')[0]
-    </script>
+{% extends 'core/base_manage.html' %} {% load static %} {% block head %}
+<title>Lập lịch</title>
+<link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
+{% endblock head %} {% block contain %}
+<div class="main">
+  <form action="" method="post">
+    {% csrf_token %}
+    <select name="train">
+      {% for train in trains %}
+        <option value="{{train.id}}">{{train}}</option>
+      {% endfor %}
+    </select>
+    <select name="route">
+      {% for route in routes %}
+        <option value="{{route.id}}">{{route}}</option>
+      {% endfor %}
+    </select>
+    <input type="date" name="start_day" id="start_day" required />
+    <select name="start_time">
+      <option value="06:00:00">6h00</option>
+      <option value="09:00:00">9h00</option>
+      <option value="06:00:00">18h00</option>
+    </select>
+    <input type="submit" value="Add" />
+  </form>
+  <fieldset>
+    <legend id="myLegend">Schedules:</legend>
+    <table border="1px solid gray">
+      <tr border="1px solid gray">
+        <th style="padding: 5px">Nơi đi</th>
+        <th style="padding: 5px">Nơi đến</th>
+        <th style="padding: 5px">Ngày Giờ</th>
+      </tr>
+      {% for schedule in schedules %}
+      <tr border="1px solid gray">
+        <td style="padding: 5px">{{schedule.route.departure}}</td>
+        <td style="padding: 5px">{{schedule.route.destination}}</td>
+        <td style="padding: 5px">
+          Ngày {{schedule.start_day}} lúc {{schedule.get_start_time_display}}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </fieldset>
+</div>
+<script>
+  let ngayhomnay = new Date();
+  document.querySelector("#start_day").value = ngayhomnay
+    .toISOString()
+    .split("T")[0];
+</script>
 {% endblock contain %}

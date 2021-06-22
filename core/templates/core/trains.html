@@ -1,34 +1,31 @@
-{% extends 'core/base_manage.html' %}
+{% extends 'core/base_manage.html' %} {% load static %} {% block head %}
+<title>Thêm Tàu</title>
+<link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
+{% endblock head %} {% block contain %}
+<div class="main">
+  <form action="" method="post">
+    {% csrf_token %}
+    <label for="name">Name: </label>
+    <input type="text" name="name" />
+    <label for="capacity">Capacity: </label>
+    <input type="number" name="capacity" />
 
-{% load static %}
-
-{% block head %}
-    <title>Thêm Tàu</title>
-{% endblock head %}
-
-{% block contain %}
-    <form action="" method="post">
-        {% csrf_token %}
-        <label for="name">Name: </label>
-        <input type="text" name='name'>
-        <label for="capacity">Capacity: </label>
-        <input type="number" name='capacity'>
-
-        <input type="submit" value="Add">
-    </form>
-    <fieldset>
-        <legend id="myLegend">Trains:</legend>
-        <table border="1px solid gray">
-            <tr border="1px solid gray" >
-                <th style="padding:5px">Tên Tàu</th>
-                <th style="padding:5px">Sức chứa</th>
-            </tr>
-            {% for train in trains %}
-            <tr border="1px solid gray">
-                <td style="padding:5px">{{train.name}}</td> 
-                <td style="padding:5px">{{train.capacity}}</td> 
-            </tr>
-            {% endfor %}
-        </table>
-    </fieldset>
+    <input type="submit" value="Add" />
+  </form>
+  <fieldset>
+    <legend id="myLegend">Trains:</legend>
+    <table border="1px solid gray">
+      <tr border="1px solid gray">
+        <th style="padding: 5px">Tên Tàu</th>
+        <th style="padding: 5px">Sức chứa</th>
+      </tr>
+      {% for train in trains %}
+      <tr border="1px solid gray">
+        <td style="padding: 5px">{{train.name}}</td>
+        <td style="padding: 5px">{{train.capacity}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </fieldset>
+</div>
 {% endblock contain %}

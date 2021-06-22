@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.main {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  margin-top: 50px;
+}
+.main form {
+    width: 100%;
+}
+.main label {
+    font-size: 20px;
+    margin-right: 10px;
+    margin-left: 50px;
+}
+.main select {
+    width: 15%;
+    padding: 10px;
+}
+.main input{
+    padding: 7px 15px;
+}
+.main legend{
+    font-size: 25px;
+    font-weight: bold;
+    padding: 50px 0 20px 0;
+}
+.main table {
+    width: 40%;
+  margin: auto;
+  background-color: #fcfbf7;
+  box-shadow: 10px 20px #fcf0e7;
+}
+.main table th,
+.main table td {
+    line-height: 60px;
+    font-size: 17px;
+}

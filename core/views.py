@@ -139,9 +139,13 @@ class Tickets(View):
 @method_decorator(staff_member_required, name='dispatch')
 class Schedules(View):
     def get(self,request):
+        trains = Train.objects.all()
+        routes = Route.objects.all()
         schedules = Schedule.objects.all().order_by('-start_day')
         context = {
             'schedules':schedules,
+            'trains':trains,
+            'routes':routes,
         }
         return render(request, 'core/schedules.html',context)
     
