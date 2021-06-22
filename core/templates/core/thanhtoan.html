@@ -7,6 +7,9 @@
 
 {% block contain %}
     <h2>Thanh toán các vé đã được đặt</h2>
+    
+    
+    {% if bill.id != None %}
     <div class="container_detail colorHeader_menu">
             <p>Số ghế</p>
             <p>Giá</p>
@@ -15,8 +18,6 @@
             <p>Tuyến</p>
             <p></p>
     </div>
-    
-    {% if bill.id != None %}
         {% for bill_detail in bill_details %}
             <div class="container_detail">
                 <div class="dropdown-divider"></div>
@@ -43,4 +44,8 @@
     {% else %}
         <p>Bạn chưa có hoá đơn nào cần thanh toán! <a href="{% url 'datve' %}">Đặt vé ngay</a></p>
     {% endif %}
+    <script>
+        // active menu header
+        document.querySelectorAll(".item_header")[2].classList.add("activePage");
+    </script>
 {% endblock contain %}
