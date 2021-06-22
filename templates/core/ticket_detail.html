@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block head %}
+    <title>Chi tiết vé</title>
+{% endblock head %}
+
+{% block contain %}
+    <h2>Chi tiết vé</h2>
+    <div class="container_form">
+        <p>{{bill_detail.ticket.get_seat_display}}</p>
+        <p>{{bill_detail.ticket.cost}}</p>
+        <p>{{bill_detail.ticket.schedule.start_day}}</p>
+        <p>{{bill_detail.ticket.schedule.get_start_time_display}}</p>
+        <a href="{% url 'huyveuser' bill_detail.id %}">Huỷ vé</a>
+    </div>
+{% endblock contain %}
