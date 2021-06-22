@@ -6,11 +6,11 @@
 
 {% block contain %}
     <h2>Chi tiết vé</h2>
-    <div>
+    <div class="container_form">
         <p>{{bill_detail.ticket.get_seat_display}}</p>
         <p>{{bill_detail.ticket.cost}}</p>
         <p>{{bill_detail.ticket.schedule.start_day}}</p>
         <p>{{bill_detail.ticket.schedule.get_start_time_display}}</p>
-        <a href="{% url 'huyve' bill_detail.id %}">Huỷ vé</a>
+        <a href="{% url 'huyveuser' bill_detail.id %}">Huỷ vé</a>
     </div>
 {% endblock contain %}

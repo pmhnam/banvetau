@@ -4,20 +4,51 @@
 
 {% block head %}
     <title>Trang chủ</title>
+    
+    <!-- <link rel="stylesheet" href="{% static 'css/scss/content.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/scss/thanhToan.css' %}">
 {% endblock head %}
 
 {% block contain %}
+    <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
     <div class="display_tickets">
         {% if list_bill_detail.count != 0 %}
-            <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
+        <div class="tickets_info">
+            <div class="container_detail colorHeader_menu">
+                <p>Số ghế</p>
+                <p>Giá</p>
+                <p>Ngày đi</p>
+                <p>Giờ đi</p>
+                <p>Tuyến</p>
+                <p></p>
+            </div>
+        
             {% for bill_detail in list_bill_detail %}
-                <a href="{% url 'ticket_detail' bill_detail.id %}">{{bill_detail.ticket.get_seat_display}} giá:{{bill_detail.ticket.cost}}</a>
-            {% endfor %}
-            <a href="{% url 'datve' %}">đặt vé thêm</a>
+                <div class="container_detail">
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-divider"></div>
+    
+                    <p> {{bill_detail.ticket.get_seat_display}}</p>
+                    <p> {{bill_detail.ticket.cost}}</p>
+                    <p> {{bill_detail.ticket.schedule.start_day}}</p>
+                    <p> {{bill_detail.ticket.schedule.get_start_time_display}}</p>
+                    <p> {{bill_detail.ticket.schedule.route}}</p>
+                    <a href="{% url 'huyve' bill_detail.id %}"> Huỷ vé</a>
+                </div>
+                {% endfor %}
+            <a class="btnDatThem" href="{% url 'datve' %}">Đặt vé thêm</a>
         {% else %}
             <h2>Bạn chưa đặt vé nào</h2>
-            <a href="{% url 'datve' %}">đặt ngay</a>
+            <a  href="{% url 'datve' %}">Đặt ngay</a>
         {% endif %}
     </div>
+</div>        
+<script>
+    document.querySelector(".item_header").classList.add("activePage");
+</script>
 {% endblock contain %}
 

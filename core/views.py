@@ -44,13 +44,14 @@ def register(request):
 
 @login_required
 def ticketDetail(request,pk):
-    bill_detail = BillDetail.objects.get(id = pk)
+    bill_detail = BillDetail.objects.get(pk = pk)
+    # bill_detail = BillDetail.objects.get(pk = pk)
     context = {
         'bill_detail':bill_detail,
     }
     return render(request, 'core/ticket_detail.html',context)
 
-# bill_detail.id
+# bill_detail.id cho manage
 @login_required
 def huyVe(request,pk):
     bill_detail = BillDetail.objects.get(pk = pk)
@@ -62,6 +63,8 @@ def huyVe(request,pk):
     bill.save()
     bill_detail.delete()
     return redirect(request.META.get('HTTP_REFERER'))
+
+
 
 @login_required
 def thanhToan(request):
@@ -130,7 +133,7 @@ class Tickets(View):
                     total += i.ticket.cost
                 bill.total = total
                 bill.save()
-        return redirect('/')
+        return redirect('index')
 
 
 @method_decorator(staff_member_required, name='dispatch')
