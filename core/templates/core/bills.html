@@ -1,0 +1,26 @@
+{% extends 'core/base_manage.html' %}
+
+{% load static %}
+
+{% block head %}
+    <title>Bills</title>
+{% endblock head %}
+
+{% block contain %}
+<fieldset>
+    <legend id="myLegend">Bills:</legend>
+    <table border="1px solid gray">
+        <tr border="1px solid gray" >
+            <th style="padding:5px">Mã</th>
+            <th style="padding:5px">Tên</th>
+        </tr>
+        {% for bill in bills %}
+        <tr border="1px solid gray">
+            <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill.id}}</a></td> 
+            <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill}}</a></td> 
+        </tr>
+        {% endfor %}
+    </table>
+</fieldset>
+
+{% endblock contain %}

@@ -1,15 +1,13 @@
+{% extends 'core/base.html' %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block head %}
     <title>Đặt vé</title>
     <link rel="stylesheet" href="{% static 'css/timve.css' %}">
-</head>
-<body>
+{% endblock head %}
+
+{% block contain %}
     <section>
         <div class="container">
             <div class="control">
@@ -26,22 +24,25 @@
                     <option value="18h00">18h00</option>
                 </select>
             </div>
-        <div class="post">
-            <form method="POST">
-                <div class="tickets">
+            <div class="post">
+                <form method="POST">
+                    <div class="tickets">
+                    </div>
+                    {%csrf_token%}
+                    {% if user.username %}
+                        <input class="submit" type="submit" value="Đặt vé">
+                    {% else %}
+                        <buton class="submit" ><a href ="{% url 'login' %}">Login</a></button>
+                    {% endif %}
+                </form>
+                <div class="note">
+                    <span>Chưa đặt</span>
+                    <span>Đang chọn</span>
+                    <span>Đã đặt</span>
                 </div>
-                {%csrf_token%}
-                <input class="submit" type="submit" value="Đặt vé">
-            </form>
-            <div class="note">
-                <span>Chưa đặt</span>
-                <span>Đang chọn</span>
-                <span>Đã đặt</span>
             </div>
-
         </div>
-    </div>
-</section>
+    </section>
 
     <script>
         const div_tickets = document.querySelector('.tickets')
@@ -51,8 +52,7 @@
         const list_ticket = []
         var find_tickets = []
         let ngayhomnay = new Date()
-        {% comment %} input_date.value = ngayhomnay.toISOString().split('T')[0] {% endcomment %}
-        input_date.value = '2021-06-22'
+        input_date.value = ngayhomnay.toISOString().split('T')[0]
 
 
         var s = []
@@ -154,8 +154,6 @@
             display_tickets(find_tickets);
         })
 
-        
-
         function chuyendoithang(key){
             let result = ''
             switch (key) {
@@ -236,6 +234,7 @@
             }
             choosing_seat();
         }
+
         function choosing_seat() {
             const clickSlots = document.querySelectorAll(".seat_slot");
             const btnChooseSeats = document.querySelectorAll(".choose_seat");
@@ -270,7 +269,6 @@
                 })
             })
         }
-    </script>
-</body>
 
-</html>
+    </script>
+{% endblock contain %}

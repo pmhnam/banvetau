@@ -1,23 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'core/base.html' %}
+
+{% block head %}
+    <title>Thanh toán</title>
+{% endblock head %}
+
+{% block contain %}
     <h2>Thanh Toán</h2>
-    {% for bill_detail in bill_details %}
-        <div>
-        <p>{{bill_detail.ticket.get_seat_display}}</p>
-        <p>Giá: {{bill_detail.ticket.cost}}</p>
-        <p>Ngày đi: {{bill_detail.ticket.schedule.start_day}}</p>
-        <p>Giờ đi: {{bill_detail.ticket.schedule.start_time}}</p>
-        <p>Tuyến: {{bill_detail.ticket.schedule.route}}</p>
-        </div>
-    {% endfor %}
-    <h2>Tổng: {{bill.total}} VND</h2>
-    <a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a>
-</body>
-</html>
+    {% if bill.count != 0 %}
+        {% for bill_detail in bill_details %}
+            <div>
+                <p>{{bill_detail.ticket.get_seat_display}}</p>
+                <p>Giá: {{bill_detail.ticket.cost}}</p>
+                <p>Ngày đi: {{bill_detail.ticket.schedule.start_day}}</p>
+                <p>Giờ đi: {{bill_detail.ticket.schedule.start_time}}</p>
+                <p>Tuyến: {{bill_detail.ticket.schedule.route}}</p>
+            </div>
+        {% endfor %}
+        <h2>Tổng: {{bill.total}} VND</h2>
+        <buton><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a><buton>
+    {% else %}
+        <p>Bạn chưa có hoá đơn nào cần thanh toán! <a href="{% url 'datve' %}">Đặt vé ngay</a></p>
+    {% endif %}
+{% endblock contain %}

@@ -1,28 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block head %}
+    <title>Trang chủ</title>
+{% endblock head %}
+
+{% block contain %}
     <div class="display_tickets">
         {% if list_bill_detail.count != 0 %}
-        <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
-        {% for bill_detail in list_bill_detail %}
-            <a href="{% url 'ticket_detail' bill_detail.id %}">{{bill_detail.ticket.get_seat_display}} giá:{{bill_detail.ticket.cost}}</a>
-        {% endfor %}
-        <a href="{% url 'datve' %}">đặt vé thêm</a>
+            <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
+            {% for bill_detail in list_bill_detail %}
+                <a href="{% url 'ticket_detail' bill_detail.id %}">{{bill_detail.ticket.get_seat_display}} giá:{{bill_detail.ticket.cost}}</a>
+            {% endfor %}
+            <a href="{% url 'datve' %}">đặt vé thêm</a>
         {% else %}
-        <h2>Bạn chưa đặt vé nào</h2>
-        <a href="{% url 'datve' %}">đặt ngay</a>
+            <h2>Bạn chưa đặt vé nào</h2>
+            <a href="{% url 'datve' %}">đặt ngay</a>
         {% endif %}
     </div>
-    
-<script>
-    const div_display_tickets = document.querySelector('.display_tickets')
-    if
-</script>
-</body>
-</html>
+{% endblock contain %}
+

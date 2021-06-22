@@ -7,6 +7,8 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import RegistrationForm
+from django.contrib.admin.views.decorators import staff_member_required
+
 # Create your views here.
 @login_required
 def index(request):
@@ -27,7 +29,6 @@ def index(request):
                 list_bill_detail.append(bdt)
     context = {
         'list_bill_detail':list_bill_detail,
-        
     }
     return render(request, "core/index.html",context)
 
@@ -39,7 +40,6 @@ def register(request):
             form.save()
             return redirect('/')
     return render(request,'core/register.html',{'form':form})
-
 
 
 @login_required
@@ -61,12 +61,15 @@ def huyVe(request,pk):
     ticket.save()
     bill.save()
     bill_detail.delete()
-    return redirect('/')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def thanhToan(request):
-    bill = Bill.objects.get(user = request.user, status = 'UNPAID')
-    bill_details = bill.bills.all()
+    bill = Bill.objects.filter(user = request.user, status = 'UNPAID').first()
+    if(bill != None):
+        bill_details = bill.bills.all()
+    else:
+        bill_details = None
     context= {
         'bill_details':bill_details,
         'bill':bill,
@@ -78,37 +81,10 @@ def xuLyThanhToan(request,pk):
     bill = Bill.objects.get(pk = pk)
     bill.status = 'PAID'
     bill.save()
-    return redirect('/')
+    return redirect(request.META.get('HTTP_REFERER'))
 
-@method_decorator(login_required(), name='dispatch')
-class Schedules(View):
-    def get(self,request):
-        trains = Train.objects.all()
-        routes = Route.objects.all()
-        context = {
-            'trains':trains,
-            'routes':routes,
-        }
-        return render(request, 'core/schedules.html',context)
-    
-    def post(self,request):
-        form = request.POST
-        train_id = form['train']
-        route_id = form['route']
-        start_day = form['start_day']
-        start_time = form['start_time']
 
-        print(start_time)
-        train = Train.objects.get(id = train_id)
-        route = Route.objects.get(id = route_id)
-        obj, created = Schedule.objects.get_or_create(train = train,route = route, start_day = start_day, start_time = start_time)
-
-        for i in range(1,31):
-            Ticket.objects.get_or_create(seat = i, schedule = obj )
-        
-        return redirect("schedules")
-    
-@method_decorator(login_required(), name='dispatch')
+# @method_decorator(login_required(), name='dispatch')
 class Tickets(View):
     def get(self,request):
         today = date.today()
@@ -137,7 +113,6 @@ class Tickets(View):
         today = date.today()
         
         for i in tickets:                
-
             id = form.get(str(i.id), None)
             if id != None:
                 print("id vé đặt là ",id)
@@ -158,3 +133,106 @@ class Tickets(View):
         return redirect('/')
 
 
+@method_decorator(staff_member_required, name='dispatch')
+class Schedules(View):
+    def get(self,request):
+        schedules = Schedule.objects.all().order_by('-start_day')
+        context = {
+            'schedules':schedules,
+        }
+        return render(request, 'core/schedules.html',context)
+    
+    def post(self,request):
+        form = request.POST
+        train_id = form['train']
+        route_id = form['route']
+        start_day = form['start_day']
+        start_time = form['start_time']
+
+        print(start_time)
+        train = Train.objects.get(id = train_id)
+        route = Route.objects.get(id = route_id)
+        obj, created = Schedule.objects.get_or_create(train = train,route = route, start_day = start_day, start_time = start_time)
+
+        for i in range(1,31):
+            Ticket.objects.get_or_create(seat = i, schedule = obj )
+        return redirect("schedules")
+    
+
+@method_decorator(staff_member_required, name='dispatch')
+class Routes(View):
+    def get(self,request):
+        stations = Station.objects.all()
+        routes = Route.objects.all()
+        context = {
+            'stations':stations,
+            'routes':routes,
+        }
+        return render(request, 'core/routes.html',context)
+    
+    def post(self,request):
+        form = request.POST
+        departure_id = form['departure']
+        destination_id = form['destination']
+        departure = Station.objects.get(id = departure_id )
+        destination = Station.objects.get(id = destination_id )
+
+        obj, created = Route.objects.get_or_create(departure = departure,destination = destination )
+        return redirect("routes")
+    
+
+@method_decorator(staff_member_required, name='dispatch')
+class Stations(View):
+    def get(self,request):
+        stations = Station.objects.all()
+        context = {
+            'stations':stations,
+        }
+        return render(request, 'core/stations.html',context)
+    
+    def post(self,request):
+        form = request.POST
+        name = form['name']
+        address = form['address']
+
+        Station.objects.get_or_create(name = name, address = address )
+        return redirect("stations")
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class Trains(View):
+    def get(self,request):
+        trains = Train.objects.all()
+        context = {
+            'trains':trains,
+        }
+        return render(request, 'core/trains.html',context)
+    
+    def post(self,request):
+        form = request.POST
+        name = form['name']
+        capacity = form['capacity']
+
+        Train.objects.get_or_create(name = name, capacity = capacity )
+        return redirect("trains")
+    
+@staff_member_required
+def get_bill(request):
+    bills = Bill.objects.all().order_by('-status')
+    context = {
+        'bills':bills,
+    }
+    return render(request,'core/bills.html',context)
+
+@staff_member_required
+def detail_bill(request,pk):
+    bill = Bill.objects.get(pk=pk)
+    bill_details = bill.bills.all()
+    context = {
+        'bill':bill,
+        'bill_details':bill_details,
+    }
+    return render(request,'core/bill_details.html',context)
+
+
+        

@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'core/base_manage.html' %}
+
+{% load static %}
+
+{% block head %}
+    <title>Lập lịch</title>
+{% endblock head %}
+
+{% block contain %}
     <form action="" method="post">
         {% csrf_token %}
         <select name='train'>
@@ -19,7 +19,7 @@
             <option value = '{{route.id}}'>{{route}}</option>
         {% endfor %}
         </select>
-        <input type="date" name="start_day" id="" required>
+        <input type="date" name="start_day" id="start_day" required>
         <select name="start_time">
             <option value="06:00:00">6h00</option>
             <option value="09:00:00">9h00</option>
@@ -27,5 +27,25 @@
         </select>
         <input type="submit" value="Add">
     </form>
-</body>
-</html>
+    <fieldset>
+        <legend id="myLegend">Schedules:</legend>
+        <table border="1px solid gray">
+            <tr border="1px solid gray" >
+                <th style="padding:5px">Nơi đi</th>
+                <th style="padding:5px">Nơi đến</th>
+                <th style="padding:5px">Ngày Giờ</th>
+            </tr>
+            {% for schedule in schedules %}
+            <tr border="1px solid gray">
+                <td style="padding:5px">{{schedule.route.departure}}</td> 
+                <td style="padding:5px">{{schedule.route.destination}}</td> 
+                <td style="padding:5px">Ngày {{schedule.start_day}} lúc {{schedule.get_start_time_display}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </fieldset>
+    <script>
+        let ngayhomnay = new Date()
+        document.querySelector('#start_day').value = ngayhomnay.toISOString().split('T')[0]
+    </script>
+{% endblock contain %}

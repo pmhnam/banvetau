@@ -25,7 +25,7 @@
 				<div class="d-flex justify-content-center form_container">
 					<form action="" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="next" value="/accounts/login"/>
+                        {% comment %} <input type="hidden" name="next" value="/accounts/login"/> {% endcomment %}
 						<div class="input-group mb-2">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-user"></i></span>
