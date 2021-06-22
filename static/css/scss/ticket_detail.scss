@@ -1,0 +1,26 @@
+h2{
+    font-size: 26px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+.container_form{
+    background: rgb(255, 251, 251);
+    margin-left: 60px;
+    width: 570px;
+    display: grid;
+    grid-template-columns: repeat(4,150px);
+    
+    font-size: 18px;
+    p{
+        margin-top: 10px;
+    }
+    a{  
+        text-decoration: none;
+        background:#353e4e;
+        border-radius: 5%;
+        color: white;
+        width: 100px;
+        padding: 8px 20px;
+        margin-left: 300%;    
+    }
+}
