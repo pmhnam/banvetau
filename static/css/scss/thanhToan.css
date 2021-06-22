@@ -1,0 +1,93 @@
+h2 {
+  font-size: 26px;
+  margin-left: 30%;
+  margin-top: 10px;
+}
+
+.container_detail {
+  width: 1200px;
+  margin-left: 60px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (200px)[6];
+      grid-template-columns: repeat(6, 200px);
+  background: #fffbfb;
+}
+
+.container_detail p {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.container_detail a {
+  text-decoration: none;
+  line-height: 45px;
+  font-size: 20px;
+  color: red;
+}
+
+.payment {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  margin-top: 10px;
+}
+
+.payment h2 {
+  margin-left: 55%;
+}
+
+.payment a {
+  text-decoration: none;
+  background: #353e4e;
+  border-radius: 5%;
+  color: white;
+  padding: 8px 40px;
+  width: 170px;
+  margin-left: 50px;
+  line-height: 45px;
+}
+
+.btnDatThem {
+  text-decoration: none;
+  background: #353e4e;
+  border-radius: 5%;
+  color: white;
+  padding: 8px 40px;
+  width: 170px;
+  margin-left: 72%;
+  line-height: 45px;
+}
+
+.colorHeader_menu {
+  background: #220ffa;
+  font-size: 20px;
+  color: white;
+}
+
+.container_header .container_menu .menu_header .activePage {
+  -webkit-transform: scale(1.02);
+          transform: scale(1.02);
+  cursor: pointer;
+}
+
+.container_header .container_menu .menu_header .activePage a {
+  color: black !important;
+}
+
+.container_header .container_menu .menu_header .activePage::before {
+  content: '';
+  width: 130px;
+  height: 30px;
+  border-radius: 30px;
+  position: absolute;
+  background: #f7ecd8;
+  left: -15px;
+  top: 0;
+  z-index: -1;
+}
+/*# sourceMappingURL=thanhToan.css.map */

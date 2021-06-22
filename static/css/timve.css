@@ -1,0 +1,171 @@
+@charset "UTF-8";
+@font-face {
+  font-family: myFont;
+  src: url(./SVN-Effra.ttf);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: myFont;
+}
+
+body {
+  max-width: 100vw;
+  max-height: 100vh;
+  background: #fdfcf0;
+}
+
+.container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 40px;
+}
+
+.container .control {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 200px 200px 120px;
+      grid-template-columns: 200px 200px 120px;
+  grid-gap: 20px;
+  padding: 100px 180px;
+  padding-bottom: 0;
+  position: relative;
+
+}
+
+.container .control select {
+  font-size: 16px;
+  padding: 4px;
+}
+
+.container .control input {
+  font-size: 16px;
+  padding: 4px;
+}
+
+.container .control:after {
+  content: 'Chọn lịch trình thời gian';
+  font-size: 25px;
+  position: absolute;
+  top: 40px;
+  left: 178px;
+}
+
+.container .post {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.container .post form {
+  height: 100%;
+  width: 1000px;
+  margin-left: 180px;
+}
+
+.container .post form .tickets {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (1fr)[6];
+      grid-template-columns: repeat(6, 1fr);
+  grid-row-gap: 20px;
+}
+
+.container .post form .tickets div {
+  width: 80px;
+  height: 80px;
+  background: white;
+  -webkit-box-shadow: #e9dfdf 1px 1px 1px 2px;
+          box-shadow: #e9dfdf 1px 1px 1px 2px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+}
+
+.container .post form .tickets div input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.container .post form .tickets div label {
+  z-index: 1;
+}
+
+.container .post form .tickets div .choose_seat {
+  opacity: 0;
+}
+
+.container .post .note {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 25px;
+  position: relative;
+}
+
+.container .post .note span {
+  line-height: 40px;
+}
+
+.container .post .note span:before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dfd1d1;
+  position: absolute;
+  left: -50px;
+  -webkit-box-shadow: #dac6c6 1px 1.2px 1px 0.5px;
+          box-shadow: #dac6c6 1px 1.2px 1px 0.5px;
+}
+
+.container .post .note span:nth-child(1)::before {
+  background: white;
+}
+
+.container .post .note span:nth-child(2)::before {
+  background: #0075ff;
+}
+
+.container .post .note span:nth-child(3)::before {
+  background: #e64242;
+}
+
+.container .post .note .submit {
+  font-size: 16px;
+  padding: 4px;
+  margin-left: -50px;
+  -webkit-box-shadow: #dac6c6 1px 1.5px 1px 0.5px;
+          box-shadow: #dac6c6 1px 1.5px 1px 0.5px;
+}
+
+.container .post form .tickets .choosing {
+  background: #0075ff;
+}
+
+.container .post form .tickets .active {
+  background: #e64242;
+}
