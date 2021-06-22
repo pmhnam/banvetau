@@ -4,6 +4,7 @@
 
 {% block head %}
     <title>Bills</title>
+    <link rel="stylesheet" href="{% static 'css/bills.css' %}">
 {% endblock head %}
 
 {% block contain %}
@@ -15,10 +16,10 @@
             <th style="padding:5px">Tên</th>
         </tr>
         {% for bill in bills %}
-        <tr border="1px solid gray">
-            <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill.id}}</a></td> 
-            <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill}}</a></td> 
-        </tr>
+            <tr border="1px solid gray">
+                <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill.id}}</a></td> 
+                <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill}}</a></td> 
+            </tr>
         {% endfor %}
     </table>
 </fieldset>

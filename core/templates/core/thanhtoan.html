@@ -6,7 +6,7 @@
 
 {% block contain %}
     <h2>Thanh Toán</h2>
-    {% if bill.count != 0 %}
+    {% if bill.id != None %}
         {% for bill_detail in bill_details %}
             <div>
                 <p>{{bill_detail.ticket.get_seat_display}}</p>
