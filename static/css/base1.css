@@ -1,5 +1,7 @@
 .activePage{
   background-color: #9fe0d7;
+}
+.activePage a{
   color: blue;
 }
 

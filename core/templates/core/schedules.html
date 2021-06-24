@@ -19,7 +19,7 @@
     <select name="start_time">
       <option value="06:00:00">6h00</option>
       <option value="09:00:00">9h00</option>
-      <option value="06:00:00">18h00</option>
+      <option value="18:00:00">18h00</option>
     </select>
     <input type="submit" value="Add" />
   </form>
@@ -43,6 +43,10 @@
     </table>
   </fieldset>
 </div>
+<script>
+    // active menu header
+    document.querySelectorAll(".item_header")[1].classList.add("activePage");
+</script>
 <script>
   let ngayhomnay = new Date();
   document.querySelector("#start_day").value = ngayhomnay

@@ -10,6 +10,8 @@ from .forms import RegistrationForm
 from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
+
+
 @login_required
 def index(request):
     list_bill_detail = []
@@ -27,8 +29,10 @@ def index(request):
                     list_bill_detail.append(bdt)
             elif bdt.ticket.schedule.start_day > today:
                 list_bill_detail.append(bdt)
+    number = len(list_bill_detail)
     context = {
         'list_bill_detail':list_bill_detail,
+        'number':number,
     }
     return render(request, "core/index.html",context)
 
@@ -225,7 +229,7 @@ class Trains(View):
     
 @staff_member_required
 def get_bill(request):
-    bills = Bill.objects.all().order_by('-status')
+    bills = Bill.objects.all().order_by('-status','-date')
     context = {
         'bills':bills,
     }

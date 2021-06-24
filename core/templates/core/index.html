@@ -10,9 +10,12 @@
 {% endblock head %}
 
 {% block contain %}
-    <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
     <div class="display_tickets">
-        {% if list_bill_detail.count != 0 %}
+        {% if number == 0  %}
+            <h2>Bạn chưa đặt vé nào</h2>
+            <a  class="btnDatThem" href="{% url 'datve' %}">Đặt ngay</a>
+        {% else %}
+        <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
         <div class="tickets_info">
             <div class="container_detail colorHeader_menu">
                 <p>Số ghế</p>
@@ -41,9 +44,8 @@
                 </div>
                 {% endfor %}
             <a class="btnDatThem" href="{% url 'datve' %}">Đặt vé thêm</a>
-        {% else %}
-            <h2>Bạn chưa đặt vé nào</h2>
-            <a  href="{% url 'datve' %}">Đặt ngay</a>
+            <a class="btnDatThem" href="{% url 'thanhtoan' %}">Thanh Toán</a>
+
         {% endif %}
     </div>
 </div>        
