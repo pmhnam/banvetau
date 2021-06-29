@@ -1,8 +1,22 @@
 {% extends 'core/base_manage.html' %} {% load static %} {% block head %}
 <title>Lập lịch</title>
 <link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
-{% endblock head %} {% block contain %}
+{% endblock head %} 
+{% block contain %}
+  
 <div class="main">
+  {% if messages %}
+  <div class="messages">
+      {% for message in messages %}
+      <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true" style="font-size:20px">&times;</span>
+        </button>  
+      {{ message }}
+      </div>
+      {% endfor %}
+  </div>
+  {% endif %}
   <form action="" method="post">
     {% csrf_token %}
     <select name="train">
@@ -23,13 +37,16 @@
     </select>
     <input type="submit" value="Add" />
   </form>
+  
   <fieldset>
     <legend id="myLegend">Schedules:</legend>
+
     <table border="1px solid gray">
       <tr border="1px solid gray">
         <th style="padding: 5px">Nơi đi</th>
         <th style="padding: 5px">Nơi đến</th>
         <th style="padding: 5px">Ngày Giờ</th>
+        <th style="padding: 5px"></th>
       </tr>
       {% for schedule in schedules %}
       <tr border="1px solid gray">
@@ -38,6 +55,7 @@
         <td style="padding: 5px">
           Ngày {{schedule.start_day}} lúc {{schedule.get_start_time_display}}
         </td>
+        <td style="padding: 5px"><button class="btn btn-danger"><a style="color:white" href="{% url 'delete-schedule' schedule.id %}">Xoá</a></button></td>
       </tr>
       {% endfor %}
     </table>
@@ -52,5 +70,7 @@
   document.querySelector("#start_day").value = ngayhomnay
     .toISOString()
     .split("T")[0];
+
+    
 </script>
 {% endblock contain %}

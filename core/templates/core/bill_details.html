@@ -1,38 +1,51 @@
 {% extends 'core/base_manage.html' %} {% load static %} {% block head %}
 <title>Chi tiết hoá đơn</title>
 <link rel="stylesheet" href="{% static 'css/bdetail.css' %}" />
-{% endblock head %} {% block contain %}
-<div class="main">
-  <fieldset>
-    <legend id="myLegend">Chi tiết hoá đơn:</legend>
-    <table border="1px solid gray">
-      <tr border="1px solid gray">
-        <th style="padding: 5px">Vé</th>
-        <th style="padding: 5px">Giá</th>
-        <th style="padding: 5px">Ngày đi</th>
-        <th style="padding: 5px">Giờ đi</th>
-        <th style="padding: 5px">Tuyến</th>
-        <th></th>
-      </tr>
-      {% for bill_detail in bill_details %}
-      <tr border="1px solid gray">
-        <td style="padding: 5px">{{bill_detail.ticket.get_seat_display}}</td>
-        <td style="padding: 5px">{{bill_detail.ticket.cost}}</td>
-        <td style="padding: 5px">{{bill_detail.ticket.schedule.start_day}}</td>
-        <td style="padding: 5px">{{bill_detail.ticket.schedule.start_time}}</td>
-        <td style="padding: 5px">{{bill_detail.ticket.schedule.route}}</td>
-        <td style="padding: 5px">
-          <a href="{% url 'huyve' bill_detail.id%}">Huỷ vé</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-    <h2>Tổng: {{bill.total}} VND</h2>
-    {% if bill.status == 'UNPAID' %}
-    <h3><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a></h3>
-    {% else %}
-    <h3>Đã Thanh Toán</h3>
+{% endblock head %} 
+{% block contain %}
+ {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" style="font-size:20px">&times;</span>
+            </button>  
+        {{ message }}
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
-  </fieldset>
-</div>
+  <div class="main">
+    <fieldset>
+      <legend id="myLegend">Chi tiết hoá đơn: {{bill}}</legend>
+      <table border="1px solid gray">
+        <tr border="1px solid gray">
+          <th style="padding: 5px">Vé</th>
+          <th style="padding: 5px">Giá</th>
+          <th style="padding: 5px">Ngày đi</th>
+          <th style="padding: 5px">Giờ đi</th>
+          <th style="padding: 5px">Tuyến</th>
+          <th></th>
+        </tr>
+        {% for bill_detail in bill_details %}
+        <tr border="1px solid gray">
+          <td style="padding: 5px">{{bill_detail.ticket.get_seat_display}}</td>
+          <td style="padding: 5px">{{bill_detail.ticket.cost}}</td>
+          <td style="padding: 5px">{{bill_detail.ticket.schedule.start_day}}</td>
+          <td style="padding: 5px">{{bill_detail.ticket.schedule.start_time}}</td>
+          <td style="padding: 5px">{{bill_detail.ticket.schedule.route}}</td>
+            <td style="padding: 5px">
+              <a href="{% url 'huyve' bill_detail.id%}">Huỷ vé</a>
+            </td>
+        </tr>
+        {% endfor %}
+      </table>
+      <h2>Tổng: {{bill.total}} VND</h2>
+      {% if bill.status == 'UNPAID' %}
+      <h3><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a></h3>
+      {% else %}
+      <h3>Đã Thanh Toán</h3>
+      {% endif %}
+    </fieldset>
+  </div>
 {% endblock contain %}

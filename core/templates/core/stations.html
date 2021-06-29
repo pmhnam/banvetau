@@ -3,26 +3,44 @@
 <link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
 {% endblock head %} {% block contain %}
 <div class="main">
+  {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" style="font-size:20px">&times;</span>
+            </button>  
+        {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
   <form action="" method="post">
     {% csrf_token %}
+    <input id="ip-slug" type="text" name="slug" placeholder="ID" readonly/>
     <label for="name">Name: </label>
-    <input type="text" name="name" />
+    <input id="ip-name" type="text" name="name" placeholder="Name" required/>
     <label for="address">Address: </label>
-    <input type="text" name="address" />
+    <input id="ip-address" type="text" name="address" placeholder="Address" required/>
 
-    <input type="submit" value="Add" />
+    <input type="submit" name="add"value="Add" />
+    <input type="submit" name="update"value="Update" />
   </form>
   <fieldset>
     <legend id="myLegend">Stations:</legend>
     <table border="1px solid gray">
       <tr border="1px solid gray">
+        <th style="padding: 5px">Mã Ga</th>
         <th style="padding: 5px">Tên Ga</th>
         <th style="padding: 5px">Địa chỉ</th>
+        <th style="padding: 5px"></th>
       </tr>
       {% for station in stations %}
       <tr border="1px solid gray">
-        <td style="padding: 5px">{{station.name}}</td>
+        <td style="padding: 5px">{{station.id}}</td>
+        <td class="name" style="padding: 5px; cursor: pointer;color: blue;">{{station.name}}</td>
         <td style="padding: 5px">{{station.address}}</td>
+        <td style="padding: 0px"><a class="btn btn-danger" href="{% url 'delete-station' station.id %}">Xoá</a></td>
       </tr>
       {% endfor %}
     </table>
@@ -31,5 +49,19 @@
     <script>
         // active menu header
         document.querySelectorAll(".item_header")[3].classList.add("activePage");
+
+        const name = document.querySelectorAll('.name')
+
+        const ipname = document.querySelector('#ip-name')
+        const ipaddress = document.querySelector('#ip-address')
+        const ipslug = document.querySelector('#ip-slug')
+
+        name.forEach(ele => {
+          ele.addEventListener('click', e=>{
+            ipname.value = e.target.textContent
+            ipaddress.value = e.target.nextElementSibling.textContent
+            ipslug.value = e.target.previousElementSibling.textContent
+          })
+        });
     </script>
 {% endblock contain %}

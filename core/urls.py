@@ -21,4 +21,8 @@ urlpatterns = [
     path('trains/', Trains.as_view() , name='trains'),
     path('bills/', views.get_bill , name='bills'),
     path('detail-bills/<int:pk>/', views.detail_bill , name='detail_bill'),
+    path('delete-schedule/<int:pk>/', views.DeleteSchedule , name='delete-schedule'),
+    path('delete-train/<int:pk>/', views.deleteTrain , name='delete-train'),
+    path('delete-station/<int:pk>/', views.deleteStation , name='delete-station'),
+
 ]

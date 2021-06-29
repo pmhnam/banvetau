@@ -3,26 +3,44 @@
 <link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
 {% endblock head %} {% block contain %}
 <div class="main">
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" style="font-size:20px">&times;</span>
+            </button>  
+        {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
   <form action="" method="post">
     {% csrf_token %}
+    <input id="ip_slug" type="text" name='slug' placeholder="ID" readonly/>
     <label for="name">Name: </label>
-    <input type="text" name="name" />
+    <input id="ip_name" type="text" name="name" required placeholder="Name"/>
     <label for="capacity">Capacity: </label>
-    <input type="number" name="capacity" />
-
-    <input type="submit" value="Add" />
+    <input id="ip_capacity" type="number" name="capacity" required placeholder="Capacity"/>
+    <input type="submit" name='add' value="Add" />
+    <input type="submit" name='update' value="Update" />
+    
   </form>
   <fieldset>
     <legend id="myLegend">Trains:</legend>
     <table border="1px solid gray">
       <tr border="1px solid gray">
+        <th style="padding: 5px">Mã Tàu</th>
         <th style="padding: 5px">Tên Tàu</th>
         <th style="padding: 5px">Sức chứa</th>
+        <th style="padding: 5px"></th>
       </tr>
       {% for train in trains %}
       <tr border="1px solid gray">
-        <td style="padding: 5px">{{train.name}}</td>
+        <td class='slug' style="padding: 5px">{{train.id}}</td>
+        <td class="name" style="padding: 5px;cursor: pointer;color:blue">{{train.name}}</td>
         <td style="padding: 5px">{{train.capacity}}</td>
+        <td style="padding: 0px"><a class="btn btn-danger" href="{% url 'delete-train' train.id %}">Xoá</a></td>
       </tr>
       {% endfor %}
     </table>
@@ -31,5 +49,21 @@
     <script>
         // active menu header
         document.querySelectorAll(".item_header")[4].classList.add("activePage");
+
+        const name = document.querySelectorAll('.name')
+        const capacity = document.querySelector('#capacity')
+
+        const ipname = document.querySelector('#ip_name')
+        const ipcapacity = document.querySelector('#ip_capacity')
+        const ipslug = document.querySelector('#ip_slug')
+
+        name.forEach(ele => {
+          ele.addEventListener('click', e=>{
+            ipname.value = e.target.textContent
+            ipcapacity.value = e.target.nextElementSibling.textContent
+            ipslug.value = e.target.previousElementSibling.textContent
+          })
+        });
+
     </script>
 {% endblock contain %}
