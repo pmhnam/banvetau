@@ -7,12 +7,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!--css style-->
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">    
+    <link rel="stylesheet" href="{% static 'css/base1.css' %}">    
     {% block head %}
     {% endblock head %}
   </head>
@@ -24,7 +24,7 @@
                     <li class="item_header"><a href="{% url 'index' %}">Trang chủ</a></li>
                     <li class="item_header"><a href="{% url 'datve' %}">Đặt vé</a></li>
                     <li class="item_header"><a href="{% url 'thanhtoan' %}">Thanh toán</a></li>
-                    <li class="item_header"><a href="#">Liên hệ</a></li>
+                    <li class="item_header"><a href="https://www.facebook.com/CoktailDail/">Liên hệ</a></li>
                     <!-- <li class="item_header"></li> -->
                 </ul>
             </div>
@@ -35,20 +35,22 @@
                                 aria-expanded="false">
                                     <i class="fas fa-user userSize"></i>
                                 </button>
-                        <span>{{user.username}}</span>
+                        <span style="color: rgb(0, 0, 0);">{{user.username}}</span>
                         <div class="dropdown-menu" aria-labelledby="triggerId">
                             <!-- <button class="dropdown-item" href="#">My cart</button> -->
                             {% if user.is_staff %}
-                                <button class="dropdown-item" ><a href="{% url 'bills' %}">Management</a></button>
+                                <a class="dropdown-item" href="{% url 'bills' %}">Management</a>
                             {% endif %}
-                            <button class="dropdown-item" ><a href="{% url 'index' %}">My cart</a></button>
+                            <a class="dropdown-item" href="{% url 'index' %}">My cart</a>
                             <div class="dropdown-divider"></div>
-                            <button class="dropdown-item" ><a href="{% url 'logout' %}">Logout</a></button>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                         </div>
                     </div>
                 </div>
             {% else %}
-                <a href ="{% url 'login' %}">Login</a>
+                <a style="color:white; text-decoration: none; font-size: 25px;" href ="{% url 'login' %}">
+                    Login
+                </a>
             {% endif %}
         </div>
     </header>

@@ -1,27 +1,34 @@
-{% extends 'core/base_manage.html' %}
-
-{% load static %}
-
-{% block head %}
-    <title>Bills</title>
-    <link rel="stylesheet" href="{% static 'css/bills.css' %}">
-{% endblock head %}
-
-{% block contain %}
-<fieldset>
+{% extends 'core/base_manage.html' %} {% load static %} {% block head %}
+<title>Bills</title>
+<link rel="stylesheet" href="{% static 'css/RTT.css' %}" />
+{% endblock head %} {% block contain %}
+<div class="main">
+  <fieldset>
     <legend id="myLegend">Bills:</legend>
     <table border="1px solid gray">
-        <tr border="1px solid gray" >
-            <th style="padding:5px">Mã</th>
-            <th style="padding:5px">Tên</th>
-        </tr>
-        {% for bill in bills %}
-            <tr border="1px solid gray">
-                <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill.id}}</a></td> 
-                <td style="padding:5px"><a href="{% url 'detail_bill' bill.id%}">{{bill}}</a></td> 
-            </tr>
-        {% endfor %}
+      <tr border="1px solid gray">
+        <th style="padding: 5px">Mã</th>
+        <th style="padding: 5px">Tên</th>
+        <th style="padding: 5px">Tổng tiền</th>
+        <th style="padding: 5px">Thanh toán</th>
+      </tr>
+      {% for bill in bills %}
+      <tr border="1px solid gray">
+        <td style="padding: 5px">
+          <a href="{% url 'detail_bill' bill.id%}">{{bill.id}}</a>
+        </td>
+        <td style="padding: 5px">
+          <a href="{% url 'detail_bill' bill.id%}">{{bill}}</a>
+        </td>
+        <td>{{bill.total}}</td>
+        <td>{{bill.status}}</td>
+      </tr>
+      {% endfor %}
     </table>
-</fieldset>
+  </fieldset>
+</div>
+<script>
+  document.querySelector(".item_header").classList.add("activePage");
+</script>
 
 {% endblock contain %}

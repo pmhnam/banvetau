@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.main {
+  width: 60%;
+  margin: auto;
+  text-align: center;
+  margin-top: 50px;
+}
+.main h2,
+.main h3 {
+  padding-top: 30px;
+}
+.main legend {
+  font-size: 25px;
+  font-weight: bold;
+  padding: 50px 0 20px 0;
+}
+.main table {
+  width: 100%;
+  margin: auto;
+  background-color: #fcfbf7;
+  box-shadow: 10px 20px #fcf0e7;
+}
+.main table th,
+.main table td {
+  line-height: 60px;
+  font-size: 17px;
+}

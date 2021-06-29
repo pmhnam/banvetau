@@ -4,7 +4,7 @@
 
 {% block head %}
     <title>Đặt vé</title>
-    <link rel="stylesheet" href="{% static 'css/timve.css' %}">
+    <link rel="stylesheet" href="{% static 'css/filterTicket.css' %}">
 {% endblock head %}
 
 {% block contain %}
@@ -29,22 +29,31 @@
                     <div class="tickets">
                     </div>
                     {%csrf_token%}
-                    {% if user.username %}
-                        <input class="submit" type="submit" value="Đặt vé">
-                    {% else %}
-                        <buton class="submit" ><a href ="{% url 'login' %}">Login</a></button>
-                    {% endif %}
+                    <input id="nutsubmit" class="submit" type="submit" value="Đặt vé">
                 </form>
+
                 <div class="note">
                     <span>Chưa đặt</span>
                     <span>Đang chọn</span>
                     <span>Đã đặt</span>
                 </div>
+                    {% comment %} {% if user.username != None %}
+                        <buton class="submit" ><a href ="{% url 'login' %}"></a></button>
+                    {% endif %} {% endcomment %}
             </div>
         </div>
     </section>
 
     <script>
+        {% if  user.username %}
+        {% else %}
+            document.querySelector('#nutsubmit').addEventListener('click',(e)=>{
+                e.preventDefault()
+                alert("Vui lòng đăng nhập để thực hiện!")
+                window.location.href = "{% url 'login' %}";
+            })
+        {% endif %}
+
         const div_tickets = document.querySelector('.tickets')
         const input_time = document.querySelector('#time')
         const input_route = document.querySelector('#route')
@@ -54,7 +63,9 @@
         let ngayhomnay = new Date()
         input_date.value = ngayhomnay.toISOString().split('T')[0]
 
-
+        // active menu header
+        document.querySelectorAll(".item_header")[1].classList.add("activePage");
+        
         var s = []
         var d = ''
         var m = ''

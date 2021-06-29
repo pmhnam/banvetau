@@ -1,24 +1,64 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block head %}
+<link rel="stylesheet" href="{% static 'css/scss/thanhToan.css' %}">
     <title>Thanh toán</title>
 {% endblock head %}
 
 {% block contain %}
-    <h2>Thanh Toán</h2>
+
+    <h2>Thanh toán các vé đã được đặt</h2>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true" style="font-size:20px">&times;</span>
+                    </button>  
+                {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
     {% if bill.id != None %}
+        <div class="container_detail colorHeader_menu">
+                <p>Số ghế</p>
+                <p>Giá</p>
+                <p>Ngày đi</p>
+                <p>Giờ đi</p>
+                <p>Tuyến</p>
+                <p></p>
+        </div>
         {% for bill_detail in bill_details %}
-            <div>
+            <div class="container_detail">
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div>
+
                 <p>{{bill_detail.ticket.get_seat_display}}</p>
-                <p>Giá: {{bill_detail.ticket.cost}}</p>
-                <p>Ngày đi: {{bill_detail.ticket.schedule.start_day}}</p>
-                <p>Giờ đi: {{bill_detail.ticket.schedule.start_time}}</p>
-                <p>Tuyến: {{bill_detail.ticket.schedule.route}}</p>
+                <p> {{bill_detail.ticket.cost}}</p>
+                <p> {{bill_detail.ticket.schedule.start_day}}</p>
+                <p> {{bill_detail.ticket.schedule.get_start_time_display}}</p>
+                <p> {{bill_detail.ticket.schedule.route}}</p>
+                <a href="{% url 'huyve' bill_detail.id %}"> Huỷ vé</a>
+
             </div>
         {% endfor %}
-        <h2>Tổng: {{bill.total}} VND</h2>
-        <buton><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a><buton>
+        <div class="payment">
+            <h2>Tổng: {{bill.total}} VND</h2>
+            <buton><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a><buton>
+        </div>
     {% else %}
+    <div class="text-center">
         <p>Bạn chưa có hoá đơn nào cần thanh toán! <a href="{% url 'datve' %}">Đặt vé ngay</a></p>
+    </div>
     {% endif %}
+    <script>
+        // active menu header
+        document.querySelectorAll(".item_header")[2].classList.add("activePage");
+    </script>
 {% endblock contain %}
