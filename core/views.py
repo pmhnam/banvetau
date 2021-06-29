@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from .models import User,Bill,BillDetail,Ticket,Train,Schedule,Route,Station
 from datetime import date,datetime as datetime2
@@ -8,8 +9,11 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import RegistrationForm
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
 
 # Create your views here.
+
+
 @login_required
 def index(request):
     list_bill_detail = []
@@ -27,8 +31,10 @@ def index(request):
                     list_bill_detail.append(bdt)
             elif bdt.ticket.schedule.start_day > today:
                 list_bill_detail.append(bdt)
+    number = len(list_bill_detail)
     context = {
         'list_bill_detail':list_bill_detail,
+        'number':number,
     }
     return render(request, "core/index.html",context)
 
@@ -54,15 +60,25 @@ def ticketDetail(request,pk):
 # bill_detail.id cho manage
 @login_required
 def huyVe(request,pk):
+    current_user = request.user
     bill_detail = BillDetail.objects.get(pk = pk)
     bill = Bill.objects.get(id = bill_detail.bill.id)
-    ticket = Ticket.objects.get(id = bill_detail.ticket.id)
-    ticket.status = 'F'
-    bill.total -= ticket.cost
-    ticket.save()
-    bill.save()
-    bill_detail.delete()
-    return redirect(request.META.get('HTTP_REFERER'))
+    if current_user == bill.user or current_user.is_staff :
+        ticket = Ticket.objects.get(id = bill_detail.ticket.id)
+        ticket.status = 'F'
+        bill.total -= ticket.cost
+        ticket.save()
+        bill.save()
+        bill_detail.delete()
+        messages.success(request,"Cancel successfully!")
+    else:
+        messages.warning(request,"You need permission")
+    if BillDetail.objects.filter(bill = bill).count() == 0:
+        bill.delete()
+    if current_user.is_staff:
+        return redirect('bills')
+    else:
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 
@@ -84,6 +100,7 @@ def xuLyThanhToan(request,pk):
     bill = Bill.objects.get(pk = pk)
     bill.status = 'PAID'
     bill.save()
+    messages.success(request,"Payment success")
     return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -133,15 +150,21 @@ class Tickets(View):
                     total += i.ticket.cost
                 bill.total = total
                 bill.save()
+
+        messages.success(request,"Successful ticket booking")
         return redirect('index')
 
 
 @method_decorator(staff_member_required, name='dispatch')
 class Schedules(View):
     def get(self,request):
+        trains = Train.objects.all()
+        routes = Route.objects.all()
         schedules = Schedule.objects.all().order_by('-start_day')
         context = {
             'schedules':schedules,
+            'trains':trains,
+            'routes':routes,
         }
         return render(request, 'core/schedules.html',context)
     
@@ -152,13 +175,22 @@ class Schedules(View):
         start_day = form['start_day']
         start_time = form['start_time']
 
-        print(start_time)
-        train = Train.objects.get(id = train_id)
-        route = Route.objects.get(id = route_id)
-        obj, created = Schedule.objects.get_or_create(train = train,route = route, start_day = start_day, start_time = start_time)
+        today = date.today()
+        now = datetime2.now() + datetime.timedelta(hours = 5)
+        current_time_txt = now.strftime("%H:%M:%S")
+        current_time = datetime2.strptime(current_time_txt,"%H:%M:%S").time()
+        std = datetime2.strptime(start_day, "%Y-%m-%d").date()
+        stt = datetime2.strptime(start_time,"%H:%M:%S").time()
+        if std > today or (std == today and stt > current_time):
+            train = Train.objects.get(id = train_id)
+            route = Route.objects.get(id = route_id)
+            obj, created = Schedule.objects.get_or_create(train = train,route = route, start_day = start_day, start_time = start_time)
 
-        for i in range(1,31):
-            Ticket.objects.get_or_create(seat = i, schedule = obj )
+            for i in range(1, obj.train.capacity + 1):
+                Ticket.objects.get_or_create(seat = i, schedule = obj )
+            messages.success(request,"Create schedule successfully")
+        else:
+            messages.warning(request,"Invalid departure time!")
         return redirect("schedules")
     
 
@@ -177,10 +209,13 @@ class Routes(View):
         form = request.POST
         departure_id = form['departure']
         destination_id = form['destination']
-        departure = Station.objects.get(id = departure_id )
-        destination = Station.objects.get(id = destination_id )
-
-        obj, created = Route.objects.get_or_create(departure = departure,destination = destination )
+        if departure_id != destination_id:
+            departure = Station.objects.get(id = departure_id )
+            destination = Station.objects.get(id = destination_id )
+            obj, created = Route.objects.get_or_create(departure = departure,destination = destination )
+            messages.success(request,"Execution successfully!")
+        else:
+            messages.warning(request,"Invalid! Departure and destination are the same.")
         return redirect("routes")
     
 
@@ -197,9 +232,30 @@ class Stations(View):
         form = request.POST
         name = form['name']
         address = form['address']
+        if 'update' in form:
+            id = form.get('slug',None)
+            if id != None:
+                s = Station.objects.get(id = id)
+                s.name = name
+                s.address = address
+                s.save()
+                messages.success(request,"Update successfully!")
+                return redirect(request.META.get('HTTP_REFERER'))
 
         Station.objects.get_or_create(name = name, address = address )
-        return redirect("stations")
+        messages.success(request,"Create train successfully!")
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+def deleteStation(request,pk):
+    current_user = request.user
+    if current_user.is_staff:
+        station = Station.objects.get(pk = pk)
+        station.delete()
+        messages.success(request,"Delete station successfully!")
+    else:
+        messages.warning(request,"You need permission!")
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -213,15 +269,38 @@ class Trains(View):
     
     def post(self,request):
         form = request.POST
-        name = form['name']
-        capacity = form['capacity']
+        name = form.get('name',None)
+        capacity = form.get('capacity',0)
+        if 'update' in form:
+            id = form.get('slug',None)
+            if id != None:
+                train = Train.objects.get(id = id)
+                train.name = name
+                train.capacity = capacity
+                train.save()
+                messages.success(request,"Update successfully!")
+                return redirect(request.META.get('HTTP_REFERER'))
+        if int(capacity) > 0 and name != None:
+            Train.objects.get_or_create(name = name, capacity = capacity )
+            messages.success(request,"Create train successfully!")
+        else:
+            messages.warning(request,"Invalid capacity!")
+        return redirect(request.META.get('HTTP_REFERER'))
 
-        Train.objects.get_or_create(name = name, capacity = capacity )
-        return redirect("trains")
+def deleteTrain(request,pk):
+    current_user = request.user
+    if current_user.is_staff:
+        train = Train.objects.get(pk = pk)
+        train.delete()
+        messages.success(request,"Delete train successfully!")
+    else:
+        messages.warning(request,"You need permission!")
+    return redirect(request.META.get('HTTP_REFERER'))
+
     
 @staff_member_required
 def get_bill(request):
-    bills = Bill.objects.all().order_by('-status')
+    bills = Bill.objects.all().order_by('-status','-date')
     context = {
         'bills':bills,
     }
@@ -238,4 +317,15 @@ def detail_bill(request,pk):
     return render(request,'core/bill_details.html',context)
 
 
-        
+def DeleteSchedule(request,pk):
+    today = date.today()
+    now = datetime2.now() + datetime.timedelta(hours = 5)
+    current_time_txt = now.strftime("%H:%M:%S")
+    current_time = datetime2.strptime(current_time_txt,"%H:%M:%S").time()
+    schedule = Schedule.objects.get(pk=pk)
+    if schedule.start_day > today or (schedule.start_day == today and schedule.start_time > current_time):
+        schedule.delete()
+        messages.success(request,"Delete successfully!")
+    else:
+        messages.warning(request,"Can't delete this schedule!")
+    return redirect(request.META.get('HTTP_REFERER'))

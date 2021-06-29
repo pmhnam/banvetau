@@ -18,7 +18,7 @@ body {
 }
 
 header {
-  background: #353e4e;
+  background: #596881;
   font-size: 18px;
 }
 
@@ -56,6 +56,7 @@ header .container_header .container_menu .menu_header .item_header {
 header .container_header .container_menu .menu_header .item_header a {
   color: white;
   text-decoration: none;
+
 }
 
 header .container_header .container_menu .menu_header .item_header:hover {
@@ -69,6 +70,7 @@ header .container_header .container_menu .menu_header .item_header:hover {
 header .container_header .container_menu .menu_header .item_header:hover a {
   color: black;
 }
+
 
 header .container_header .container_menu .menu_header .item_header:hover::before {
   content: '';
@@ -155,6 +157,27 @@ header .container_header .container_menu .menu_header .active a {
 }
 
 header .container_header .container_menu .menu_header .active::before {
+  content: '';
+  width: 130px;
+  height: 30px;
+  border-radius: 30px;
+  position: absolute;
+  background: #f7ecd8;
+  left: -15px;
+  top: 0;
+  z-index: -1;
+}
+.container_header .container_menu .menu_header .activePage {
+  -webkit-transform: scale(1.02);
+          transform: scale(1.02);
+  cursor: pointer;
+}
+
+.container_header .container_menu .menu_header .activePage a {
+  color: black !important;
+}
+
+.container_header .container_menu .menu_header .activePage::before {
   content: '';
   width: 130px;
   height: 30px;

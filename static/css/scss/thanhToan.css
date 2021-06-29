@@ -43,7 +43,7 @@ h2 {
 
 .payment a {
   text-decoration: none;
-  background: #353e4e;
+  background: #0d62f3;
   border-radius: 5%;
   color: white;
   padding: 8px 40px;
@@ -64,30 +64,10 @@ h2 {
 }
 
 .colorHeader_menu {
-  background: #220ffa;
+  background: #909090;
   font-size: 20px;
   color: white;
 }
 
-.container_header .container_menu .menu_header .activePage {
-  -webkit-transform: scale(1.02);
-          transform: scale(1.02);
-  cursor: pointer;
-}
 
-.container_header .container_menu .menu_header .activePage a {
-  color: black !important;
-}
-
-.container_header .container_menu .menu_header .activePage::before {
-  content: '';
-  width: 130px;
-  height: 30px;
-  border-radius: 30px;
-  position: absolute;
-  background: #f7ecd8;
-  left: -15px;
-  top: 0;
-  z-index: -1;
-}
 /*# sourceMappingURL=thanhToan.css.map */

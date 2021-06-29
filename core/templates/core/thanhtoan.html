@@ -6,17 +6,30 @@
 {% endblock head %}
 
 {% block contain %}
+
     <h2>Thanh toán các vé đã được đặt</h2>
-    <div class="container_detail colorHeader_menu">
-            <p>Số ghế</p>
-            <p>Giá</p>
-            <p>Ngày đi</p>
-            <p>Giờ đi</p>
-            <p>Tuyến</p>
-            <p></p>
-    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true" style="font-size:20px">&times;</span>
+                    </button>  
+                {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     
     {% if bill.id != None %}
+        <div class="container_detail colorHeader_menu">
+                <p>Số ghế</p>
+                <p>Giá</p>
+                <p>Ngày đi</p>
+                <p>Giờ đi</p>
+                <p>Tuyến</p>
+                <p></p>
+        </div>
         {% for bill_detail in bill_details %}
             <div class="container_detail">
                 <div class="dropdown-divider"></div>
@@ -36,11 +49,16 @@
             </div>
         {% endfor %}
         <div class="payment">
-        <h2>Tổng: {{bill.total}} VND</h2>
-        <buton><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a><buton>
+            <h2>Tổng: {{bill.total}} VND</h2>
+            <buton><a href="{% url 'xulythanhtoan' bill.id %}">Thanh Toán</a><buton>
         </div>
-        
     {% else %}
+    <div class="text-center">
         <p>Bạn chưa có hoá đơn nào cần thanh toán! <a href="{% url 'datve' %}">Đặt vé ngay</a></p>
+    </div>
     {% endif %}
+    <script>
+        // active menu header
+        document.querySelectorAll(".item_header")[2].classList.add("activePage");
+    </script>
 {% endblock contain %}

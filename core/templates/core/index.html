@@ -10,17 +10,32 @@
 {% endblock head %}
 
 {% block contain %}
-    <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissible show"{% endif %}>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" style="font-size:20px">&times;</span>
+            </button>  
+        {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="display_tickets">
-        {% if list_bill_detail.count != 0 %}
+        {% if number == 0  %}
+            <h2>Bạn chưa đặt vé nào</h2>
+            <a  class="btnDatThem" href="{% url 'datve' %}">Đặt ngay</a>
+        {% else %}
+        <h2>Danh sách các vé đã đặt chưa khởi hành</h2>
         <div class="tickets_info">
             <div class="container_detail colorHeader_menu">
+                <p>Payment</p>
                 <p>Số ghế</p>
                 <p>Giá</p>
                 <p>Ngày đi</p>
                 <p>Giờ đi</p>
                 <p>Tuyến</p>
-                <p></p>
             </div>
         
             {% for bill_detail in list_bill_detail %}
@@ -32,18 +47,20 @@
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-divider"></div>
     
+                    <p> {{bill_detail.bill.status}}</p>
                     <p> {{bill_detail.ticket.get_seat_display}}</p>
                     <p> {{bill_detail.ticket.cost}}</p>
                     <p> {{bill_detail.ticket.schedule.start_day}}</p>
                     <p> {{bill_detail.ticket.schedule.get_start_time_display}}</p>
                     <p> {{bill_detail.ticket.schedule.route}}</p>
-                    <a href="{% url 'huyve' bill_detail.id %}"> Huỷ vé</a>
+                    {% comment %} {% if bill_detail.bill.status == 'UNPAID' %} {% endcomment %}
+                    {% comment %} <a href="{% url 'huyve' bill_detail.id %}"> Huỷ vé</a> {% endcomment %}
+                    {% comment %} {% endif %} {% endcomment %}
                 </div>
                 {% endfor %}
             <a class="btnDatThem" href="{% url 'datve' %}">Đặt vé thêm</a>
-        {% else %}
-            <h2>Bạn chưa đặt vé nào</h2>
-            <a  href="{% url 'datve' %}">Đặt ngay</a>
+            <a class="btnDatThem" href="{% url 'thanhtoan' %}">Thanh Toán</a>
+
         {% endif %}
     </div>
 </div>        
