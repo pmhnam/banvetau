@@ -43,6 +43,7 @@
             </div>
         </div>
     </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
     <script>
         {% if  user.username %}
@@ -66,23 +67,18 @@
         // active menu header
         document.querySelectorAll(".item_header")[1].classList.add("activePage");
         
-        var s = []
-        var d = ''
-        var m = ''
-        var y = ''
-        var start_day = ''
+        let std = null
+        let stdSt = ''
         function load_ticket(){
             {% for ticket in fullticket %}
-                s = `{{ticket.schedule.start_day}}`.split(' ')
-                m = chuyendoithang(s[0])
-                d = s[1].replace(',','')
-                y = s[2]
-                start_day = y+'-'+m+'-'+d
+                std = new Date(`{{ticket.schedule.start_day}}`)
+                stdSt = moment(std).format('YYYY-MM-DD');
+                
                 list_ticket.push({
                     'id':`{{ticket.id}}`,
                     'seat':`{{ticket.get_seat_display}}`,
                     'cost':{{ticket.cost}},
-                    'start_day':start_day,
+                    'start_day':stdSt,
                     'start_time':`{{ticket.schedule.get_start_time_display}}`,
                     'type':`{{ticket.get_type_display}}`,
                     'route':`{{ticket.schedule.route.id}}`,
@@ -132,6 +128,7 @@
         })
 
         input_date.addEventListener('input',(e)=>{
+            console.log(e.target.value);
             find_tickets = []
             thoigian = input_time.value
             tuyen = input_route.value
